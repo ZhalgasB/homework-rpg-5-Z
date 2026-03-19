@@ -15,22 +15,38 @@ public class BattleService {
     }
 
     public AdventureResult battle(HeroProfile hero, BossEnemy boss, AttackAction action) {
-        // TODO: Implement the battle flow.
-        // Questions to answer:
-        // - Who attacks first?
-        // - How many rounds are allowed?
-        // - How is damage resolved?
-        // - How will randomness affect the result, if at all?
-        AdventureResult result = new AdventureResult();
-        result.setWinner("TODO");
-        result.setRounds(0);
-        result.setReward("TODO");
-        result.addLine("TODO: implement battle logic");
 
-        // Keep the field in use so students can decide whether to rely on it.
-        if (random.nextInt(1) == 0) {
-            // TODO: Replace placeholder branch with real deterministic or random logic.
+        AdventureResult result = new AdventureResult();
+        int rounds = 0;
+
+        while (hero.isAlive() &&boss.isAlive() && rounds < 20){
+            rounds++;
+
+            int dmg = action.getDamage();
+            dmg += random.nextInt(3)-1;
+            boss.takeDamage(dmg);
+
+            result.addLine(hero.getName() + " uses " + action.getActionName() + " dmg " + dmg +  " to " + boss.getName());
+
+            if (!boss.isAlive())break;
+
+            int bosDmg = boss.getAttackPower();
+            hero.takeDamage(bosDmg);
+            result.addLine(boss.getName() + "attack for " + bosDmg);
+
         }
+        String winner;
+
+        if (hero.isAlive()){
+            winner = hero.getName();
+        }
+        else winner = boss.getName();
+
+        result.setWinner(winner);
+        result.setRounds(rounds);
+        result.addLine("Battle ended after: " + rounds + "rounds");
+
+
 
         return result;
     }
